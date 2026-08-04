@@ -18,8 +18,8 @@ SRCS = main.cpp
 WIN_OBJS = main_win.o
 LIN_OBJS = main_lin.o
 
-# Default rule builds BOTH targets
-all: $(DLL_TARGET) $(SO_TARGET)
+
+win32: $(DLL_TARGET) 
 
 # --- Windows DLL Build Rules ---
 $(DLL_TARGET): $(WIN_OBJS)
@@ -28,6 +28,7 @@ $(DLL_TARGET): $(WIN_OBJS)
 main_win.o: $(SRCS)
 	$(WIN_CXX) $(CXXFLAGS) -c $< -o $@
 
+linux: $(SO_TARGET)
 # --- Linux Shared Object Build Rules ---
 $(SO_TARGET): $(LIN_OBJS)
 	$(LIN_CXX) $(LIN_LDFLAGS) -o $@ $(LIN_OBJS)
@@ -39,4 +40,4 @@ main_lin.o: $(SRCS)
 clean:
 	rm -f $(WIN_OBJS) $(LIN_OBJS)
 
-.PHONY: all clean
+.PHONY: linux win32 clean
