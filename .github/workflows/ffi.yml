@@ -1,0 +1,73 @@
+name: Build and Test Cross-Platform FFI Binaries
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build & Test on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact-name: ffifs.so
+            output-dir: lib
+          - os: windows-latest
+            artifact-name: ffifs.dll
+            output-dir: lib
+          - os: macos-latest
+            artifact-name: ffifs.dylib
+            output-dir: lib
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js Environment
+        uses: actions/setup-node@v7
+        with:
+          node-version: "26.2.0" # node:ffi only work ^26.1.0
+          cache: "npm" # Automatically caches npm packages for speed
+
+      - name: Create Output Directory
+        run: mkdir -p lib
+        shell: bash
+
+      # --- LINUX COMPILATION ---
+      - name: Compile Linux Shared Object (.so)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          g++ -O2 -Wall -std=c++17 -shared -fPIC main.cpp -o lib/ffifs.so
+
+      # --- WINDOWS COMPILATION ---
+      - name: Compile Windows Dynamic Link Library (.dll)
+        if: matrix.os == 'windows-latest'
+        run: |
+          g++ -O2 -Wall -std=c++17 -shared main.cpp -o lib/ffifs.dll -Wl,--add-stdcall-alias
+
+      # --- MACOS COMPILATION ---
+      - name: Compile macOS Universal Dynamic Library (.dylib)
+        if: matrix.os == 'macos-latest'
+        run: |
+          clang++ -O2 -Wall -std=c++17 -dynamiclib -undefined dynamic_lookup \
+            -target x86_64-apple-macos11 main.cpp -o lib/ffifs.dylib
+      # --- NODE.JS DEPENDENCIES & TESTING ---
+      - name: Install Project Dependencies (Clean Install)
+        run: npm ci
+
+      - name: Run Test Suite
+        run: npm run test
+
+      # --- UPLOAD ARTIFACTS (Only runs if tests pass) ---
+      - name: Upload Verified Binary Asset
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact-name }}
+          path: lib/${{ matrix.artifact-name }}
+          retention-days: 5
