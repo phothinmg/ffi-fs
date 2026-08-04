@@ -1,6 +1,7 @@
 # Target Names
 DLL_TARGET = lib/ffifs.dll
 SO_TARGET  = lib/ffifs.so
+DYLIB_TARGET = lib/ffifs.dylib
 
 # Compilers
 WIN_CXX   = i686-w64-mingw32-g++

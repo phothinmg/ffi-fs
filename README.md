@@ -10,28 +10,24 @@ This repository contains examples and helper code to call native functions from 
 
 ## Requirements
 
-- A Node.js build with FFI enabled. Node.js with FFI support is experimental and may not be available in all releases — Node 20 or later is recommended.
+- A Node.js build with FFI enabled. Node.js with FFI support is experimental and may not be available in all releases — Node JS version `v26.2.0` or later is recommended.
 - Run Node with the `--experimental-ffi` flag (for example: `node --experimental-ffi`).
 - A platform/architecture where Node's FFI is supported (x64/arm64 on Linux, macOS, and Windows builds that include FFI).
 
-## Installation
-
-1. Clone the repository:
-
-   git clone https://github.com/phothinmg/ffi-fs.git
-   cd ffi-fs
-
-2. Install dependencies (if the project has a package.json):
-
-   npm install
-
 ## Usage
 
-Run examples or scripts using Node with the experimental FFI flag. For example:
+- Clone the repository:
 
-   node --experimental-ffi examples/example.js
+```sh
+ git clone https://github.com/phothinmg/ffi-fs.git
+ cd ffi-fs
+```
 
-Replace `examples/example.js` with the script you want to run.
+- Install dependencies:
+
+```sh
+ npm i
+```
 
 ## Safety and Security
 
