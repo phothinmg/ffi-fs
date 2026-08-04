@@ -48,6 +48,7 @@ jobs:
       # --- WINDOWS COMPILATION ---
       - name: Compile Windows Dynamic Link Library (.dll)
         if: matrix.os == 'windows-latest'
+        shell: cmd
         run: |
           g++ -O2 -Wall -std=c++17 -shared main.cpp -o lib/ffifs.dll -Wl,--add-stdcall-alias
 
@@ -56,7 +57,7 @@ jobs:
         if: matrix.os == 'macos-latest'
         run: |
           clang++ -O2 -Wall -std=c++17 -dynamiclib -undefined dynamic_lookup \
-            -target x86_64-apple-macos11 main.cpp -o lib/ffifs.dylib
+            -target arm64-apple-macos11 main.cpp -o lib/ffifs.dylib
       # --- NODE.JS DEPENDENCIES & TESTING ---
       - name: Install Project Dependencies (Clean Install)
         run: npm ci
